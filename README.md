@@ -1,5 +1,11 @@
 # HDR DNG Merger (v1.0)
 
+> **This is a modified fork** of [rolanddd-hu/HDR_DNG_Merger](https://github.com/rolanddd-hu/HDR_DNG_Merger)
+> (GPL-3.0-or-later, © Roland Szabados), kept by maxpiens82 for an internal photo workflow. Same license.
+> Changes are listed in [CHANGES-FORK.md](CHANGES-FORK.md), and every modified file says so at its top.
+> Releases of this fork (`v1.0.0-reok.N`) are built by GitHub Actions from the tagged source, with the
+> third-party licenses in the zip's `licenses/` folder.
+
 [![Release](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/rolanddd-hu/HDR_DNG_Merger)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-orange.svg)]()

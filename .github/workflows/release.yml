@@ -1,3 +1,4 @@
+# Modified 2026-11-21 in the fork github.com/maxpiens82/HDR_DNG_Merger (see CHANGES-FORK.md).
 name: Release
 
 # Push a tag like v1.0.0 to build, test and publish a GitHub release with a portable zip.
@@ -27,7 +28,8 @@ jobs:
           if (-not $m) { throw "Could not read the project version from CMakeLists.txt" }
           $version = $m.Matches[0].Groups[1].Value
           if ("${{ github.ref_type }}" -eq "tag") {
-            $tag = "${{ github.ref_name }}".TrimStart("v")
+            # Fork (see CHANGES-FORK.md): a tag may carry a suffix, v1.0.0-reok.1; compare only 1.0.0
+            $tag = ("${{ github.ref_name }}".TrimStart("v") -split "-")[0]
             if ($tag -ne $version) {
               throw "Tag v$tag does not match the version in CMakeLists.txt ($version). Update project(... VERSION ...) first."
             }
@@ -97,6 +99,16 @@ jobs:
           Copy-Item "$($crt.FullName)\*.dll" $out
 
           Copy-Item LICENSE, README.md $out
+
+          # Fork (see CHANGES-FORK.md): third-party licenses, the fork's changes and where the source is
+          Copy-Item CHANGES-FORK.md $out
+          $lic = New-Item -ItemType Directory -Force (Join-Path $out "licenses")
+          Get-ChildItem vcpkg_installed/x64-windows/share -Directory | ForEach-Object {
+            $c = Join-Path $_.FullName "copyright"
+            if (Test-Path $c) { Copy-Item $c (Join-Path $lic "$($_.Name).txt") }
+          }
+          if (-not (Get-ChildItem $lic)) { throw "No third-party licenses found" }
+          "Source: https://github.com/${{ github.repository }}/tree/${{ github.sha }}" | Set-Content (Join-Path $out "SOURCE.txt")
 
           foreach ($exe in "hdrmerge_gui.exe", "hdrmerge_cli.exe") {
             if (-not (Test-Path (Join-Path $out $exe))) { throw "$exe missing from package" }
